@@ -1,0 +1,88 @@
+@baseUrl = http://localhost:3000/api/v1/products
+
+# Después de crear, cambia este valor por el ID recibido.
+@productId = 3
+
+### 1. Consultar todos los productos activos
+GET {{baseUrl}}/getAll?active=TRUE
+
+### 2. Consultar el teclado activo
+GET {{baseUrl}}/getById/1
+
+### 3. Crear producto
+# Guarda el ID de la respuesta en productId, arriba.
+POST {{baseUrl}}/create
+Content-Type: application/json
+
+{
+  "name": "Audifonos USB",
+  "price": 549.90,
+  "stock": 8,
+  "description": "Audifonos con microfono",
+  "brand": "Sony",
+  "img": "audifonos.jpg"
+}
+
+### 4. Actualizar todos los datos del producto creado
+PUT {{baseUrl}}/update/{{productId}}
+Content-Type: application/json
+
+{
+  "name": "Audifonos USB Pro",
+  "price": 699.90,
+  "stock": 12,
+  "description": "Audifonos con microfono y control de volumen",
+  "brand": "Sony",
+  "img": "audifonos-pro.jpg"
+}
+
+### 5. Cambiar exclusivamente el precio
+PATCH {{baseUrl}}/change-price/{{productId}}
+Content-Type: application/json
+
+{
+  "price": 599.90
+}
+
+### 6. Comprobar los datos actualizados
+GET {{baseUrl}}/getById/{{productId}}
+
+### 7. Dar de baja logicamente
+DELETE {{baseUrl}}/delete/{{productId}}
+
+### 8. Comprobar que no aparece en la consulta general
+GET {{baseUrl}}/getAll?active=TRUE
+
+### 9. Consultar el producto inactivo: se espera 404
+GET {{baseUrl}}/getById/{{productId}}
+
+### 10. ID inexistente: se espera 404
+GET {{baseUrl}}/getById/999999
+
+### 11. ID invalido: se espera 400
+GET {{baseUrl}}/getById/abc
+
+### 12. Precio negativo: se espera 400
+PATCH {{baseUrl}}/change-price/1
+Content-Type: application/json
+
+{
+  "price": -10
+}
+
+### 13. Precio con tres decimales: se espera 400
+PATCH {{baseUrl}}/change-price/1
+Content-Type: application/json
+
+{
+  "price": 399.999
+}
+
+### 14. PATCH con campos adicionales: se espera 400
+PATCH {{baseUrl}}/change-price/1
+Content-Type: application/json
+
+{
+  "price": 450.00,
+  "stock": 20
+}
